@@ -3,18 +3,25 @@ package com.byurin.kiosk
 import java.util.Scanner
 
 fun main() {
-    println("Welcome to Store. Press the Category number.")
-    // 변수 선언
+    println("Press Number.")
+
     val selectedItem = category()
     val selectedTemperature = if (selectedItem.first == "Coffee") temperature() else null
     val selectedQuantity = quantity()
     val isTogo = togo()
 
-    payment(selectedItem.second, selectedTemperature, selectedQuantity, isTogo)
+    val itemName = selectedItem.second.first
+    val price = selectedItem.second.second
+
+    payment(itemName, selectedTemperature,selectedQuantity, isTogo, price)
 }
 
-fun category(): Pair<String, String> {
-    val category = listOf("1. Coffee", "2. Ade", "3. Tea")
+fun category(): Pair<String, Pair<String, Int>> {
+    val category = listOf(
+        "1. Coffee",
+        "2. Ade",
+        "3. Smoothie"
+    )
     println(category.joinToString("\n"))
     val scanner = Scanner(System.`in`).nextInt()
 
@@ -29,7 +36,7 @@ fun category(): Pair<String, String> {
     }
 }
 
-fun orderCoffee(): Pair<String, String> {
+fun orderCoffee(): Pair<String, Pair<String, Int>> {
     val coffee = mutableMapOf(
         "1. Americano" to 2000,
         "2. Latte" to 2500,
@@ -39,9 +46,9 @@ fun orderCoffee(): Pair<String, String> {
     val scanner = Scanner(System.`in`).nextInt()
 
     return when (scanner) {
-        1 -> "Coffee" to "Americano"
-        2 -> "Coffee" to "Latte"
-        3 -> "Coffee" to "Espresso"
+        1 -> "Coffee" to ("Americano" to 2000)
+        2 -> "Coffee" to ("Latte" to 2500)
+        3 -> "Coffee" to ("Espresso" to 1500)
         else -> {
             println("Please enter a valid number")
             orderCoffee()
@@ -50,7 +57,7 @@ fun orderCoffee(): Pair<String, String> {
     temperature()
 }
 
-fun orderAde(): Pair<String, String> {
+fun orderAde(): Pair<String, Pair<String, Int>> {
     val ade = mutableMapOf(
         "Strawberry Ade" to 2500,
         "Lemon Ade" to 2500,
@@ -60,9 +67,9 @@ fun orderAde(): Pair<String, String> {
     val scanner = Scanner(System.`in`).nextInt()
 
     return when (scanner) {
-        1 -> "Ade" to "Strawberry Ade"
-        2 -> "Ade" to "Lemon Ade"
-        3 -> "Ade" to "Mint Ade"
+        1 -> "Ade" to ("Strawberry Ade" to 2500)
+        2 -> "Ade" to ("Lemon Ade" to 2500)
+        3 -> "Ade" to ("Mint Ade" to 3000)
         else -> {
             println("Please enter a valid number")
             orderAde()
@@ -70,7 +77,7 @@ fun orderAde(): Pair<String, String> {
     }
 }
 
-fun orderSmoothie(): Pair<String, String> {
+fun orderSmoothie(): Pair<String, Pair<String, Int>>{
     val tea = mutableMapOf(
         "Banana Smoothie" to 4000,
         "Milk Smoothie" to 4000,
@@ -80,9 +87,9 @@ fun orderSmoothie(): Pair<String, String> {
     val scanner = Scanner(System.`in`).nextInt()
 
     return when (scanner) {
-        1 -> "Smoothie" to "Banan Smoothie"
-        2 -> "Smoothie" to "Milk Smoothie"
-        3 -> "Smoothie" to "Mango Smoothie"
+        1 -> "Smoothie" to ("Banana Smoothie" to 4000)
+        2 -> "Smoothie" to ("Milk Smoothie" to 4000)
+        3 -> "Smoothie" to ("Mango Smoothie" to 4000)
         else -> {
             println("Please enter a valid number")
             orderSmoothie()
@@ -120,10 +127,12 @@ fun togo(): String {
     }
 }
 
-fun payment(item: String, temperature: String?, quantity: Int, togo: String) {
+fun payment(item: String, temperature: String?, quantity: Int, togo: String, price: Int) {
     println("\n--- Payment Details ---")
     println("Item: $item")
     temperature?.let { println("Temperature: $it") }
     println("Quantity: $quantity")
     println("Takeout Option: $togo")
+    val totalCost = quantity * price
+    println("Total Cost: $totalCost")
 }
