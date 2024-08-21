@@ -4,27 +4,32 @@ import java.util.Scanner
 
 fun main() {
     println("Welcome to Store. Press the Category number.")
-    category()
-    quantity()
-    togo()
-    val userQuantity = quantity()
-    payment(userQuantity)
+    // 변수 선언
+    val selectedItem = category()
+    val selectedTemperature = if (selectedItem.first == "Coffee") temperature() else null
+    val selectedQuantity = quantity()
+    val isTogo = togo()
+
+    payment(selectedItem.second, selectedTemperature, selectedQuantity, isTogo)
 }
 
-fun category() {
+fun category(): Pair<String, String> {
     val category = listOf("1. Coffee", "2. Ade", "3. Tea")
     println(category.joinToString("\n"))
     val scanner = Scanner(System.`in`).nextInt()
 
-    when(scanner) {
+    return when(scanner) {
         1 -> orderCoffee()
         2 -> orderAde()
-        3 -> orderTea()
-        else -> println("Please enter a valid number")
+        3 -> orderSmoothie()
+        else -> {
+            println("Please enter a valid number")
+            category()
+        }
     }
 }
 
-fun orderCoffee() {
+fun orderCoffee(): Pair<String, String> {
     val coffee = mutableMapOf(
         "1. Americano" to 2000,
         "2. Latte" to 2500,
@@ -33,16 +38,19 @@ fun orderCoffee() {
     println(coffee.entries.joinToString("\n"))
     val scanner = Scanner(System.`in`).nextInt()
 
-    when (scanner) {
-        1 -> println(coffee.keys.elementAt(0))
-        2 -> println(coffee.keys.elementAt(1))
-        3 -> println(coffee.keys.elementAt(2))
-        else -> println("Please enter a valid number")
+    return when (scanner) {
+        1 -> "Coffee" to "Americano"
+        2 -> "Coffee" to "Latte"
+        3 -> "Coffee" to "Espresso"
+        else -> {
+            println("Please enter a valid number")
+            orderCoffee()
+        }
     }
     temperature()
 }
 
-fun orderAde() {
+fun orderAde(): Pair<String, String> {
     val ade = mutableMapOf(
         "Strawberry Ade" to 2500,
         "Lemon Ade" to 2500,
@@ -51,40 +59,46 @@ fun orderAde() {
     println(ade.entries.joinToString("\n"))
     val scanner = Scanner(System.`in`).nextInt()
 
-    when (scanner) {
-        1 -> println(ade.keys.elementAt(0))
-        2 -> println(ade.keys.elementAt(1))
-        3 -> println(ade.keys.elementAt(2))
-        else -> println("Please enter a valid number")
+    return when (scanner) {
+        1 -> "Ade" to "Strawberry Ade"
+        2 -> "Ade" to "Lemon Ade"
+        3 -> "Ade" to "Mint Ade"
+        else -> {
+            println("Please enter a valid number")
+            orderAde()
+        }
     }
 }
 
-fun orderTea() {
+fun orderSmoothie(): Pair<String, String> {
     val tea = mutableMapOf(
-        "Lemon Tea" to 2000,
-        "Camomile Tea" to 2000,
-        "Green Tea" to 2000
+        "Banana Smoothie" to 4000,
+        "Milk Smoothie" to 4000,
+        "Mango Smoothie" to 4000
     )
     println(tea.entries.joinToString("\n"))
     val scanner = Scanner(System.`in`).nextInt()
 
-    when (scanner) {
-        1 -> println(tea.keys.elementAt(0))
-        2 -> println(tea.keys.elementAt(1))
-        3 -> println(tea.keys.elementAt(2))
-        else -> println("Please enter a valid number")
+    return when (scanner) {
+        1 -> "Smoothie" to "Banan Smoothie"
+        2 -> "Smoothie" to "Milk Smoothie"
+        3 -> "Smoothie" to "Mango Smoothie"
+        else -> {
+            println("Please enter a valid number")
+            orderSmoothie()
+        }
     }
 }
 
-fun temperature(): Boolean {
+fun temperature(): String {
     println("1. Ice\n2. Hot")
 
     val scanner = Scanner(System.`in`).nextInt()
 
     return if (scanner == 1) {
-        true
+        "Ice"
     } else {
-        false
+        "Hot"
     }
 }
 
@@ -94,18 +108,22 @@ fun quantity(): Int {
     return scanner
 }
 
-fun togo(): Boolean {
+fun togo(): String {
     println("1. to-go\n2. here")
 
     val scanner = Scanner(System.`in`).nextInt()
 
     return if (scanner == 1) {
-        true
+        "to-go"
     } else {
-        false
+        "here"
     }
 }
 
-fun payment(quantity: Int) {
-    println("You ordered ${quantity}.")
+fun payment(item: String, temperature: String?, quantity: Int, togo: String) {
+    println("\n--- Payment Details ---")
+    println("Item: $item")
+    temperature?.let { println("Temperature: $it") }
+    println("Quantity: $quantity")
+    println("Takeout Option: $togo")
 }
