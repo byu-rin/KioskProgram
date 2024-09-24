@@ -24,15 +24,15 @@ open class Order() {
     open fun orderReceipt(value: Int) : String {
         println("Select Order route.\n 1. to-go\n 2. for here")
 
-       val a = when (value) {
+       selected_receipt = when (value) {
             1 -> "to-go"
             2 -> "for here"
             else -> {
                 throw IllegalArgumentException("invalid number")
             }
         }
-        println("order_receipt : $a")
-        return a
+        println("order_receipt : $selected_receipt")
+        return selected_receipt
     }
 
     open fun orderMenu(value: Int) : Pair<String, Int> {
