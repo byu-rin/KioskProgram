@@ -18,8 +18,8 @@ interface SystemControl {
 }
 
 open class Order() {
-    protected var selected_receipt : String = orderReceipt(1)
-    protected var selected_menus : Pair<String, Int> = orderMenu(1)
+    protected var selected_receipt : String = ""
+    protected var selected_menus : Pair<String, Int> = "" to 0
 
     open fun orderReceipt(value: Int) : String {
         println("Select Order route.\n 1. to-go\n 2. for here")
@@ -96,11 +96,13 @@ class OrderQuantity() : Order() {
 }
 
 fun main() {
-    val orderReceipt = OrderReceipt()
-    val orderMenu = OrderMenu()
+//    val orderReceipt = OrderReceipt()
+//    val orderMenu = OrderMenu()
     println()
-    orderReceipt.printSelectedReceipt()
-    orderMenu.printSelectedMenu()
+    OrderReceipt().orderReceipt(1) // to-go 선택 및 출력
+    OrderReceipt().printSelectedReceipt()
+
+//    orderMenu.printSelectedMenu()
 //    println()
 //    OrderQuantity().orderQuantity(3)
 
