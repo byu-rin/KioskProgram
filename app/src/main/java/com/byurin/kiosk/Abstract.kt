@@ -1,110 +1,55 @@
 package com.byurin.kiosk
 
-interface SystemControl {
-//    fun back() {
-//        back()
-//    }
-
-    fun keep() {
-        TODO("계속 하기")
-    }
-
-    fun reset() {
-        TODO("초기화")
-    }
-
-    fun add()
-    fun delete()
+interface ReceiptAction {
+    fun orderReceipt(value: Int): String
+}
+interface OrderAction {
+    fun orderMenu(value: Int): Pair<String, Int>
 }
 
-open class Order() {
-    protected var selected_receipt : String = ""
-    protected var selected_menus : Pair<String, Int> = "" to 0
+abstract class Order : OrderAction {
+//    protected var selectedReceipt: String = ""
+    protected var selectionMenu = Pair("", 0)
 
-    open fun orderReceipt(value: Int) : String {
-        println("Select Order route.\n 1. to-go\n 2. for here")
+    // 메뉴 선택 로직을 제공하지만, 구체적인 메뉴는 하위 클래스에서 재정의
+    override fun orderMenu(value: Int): Pair<String, Int> {
+        val menu = getMenuList()
+        selectionMenu = menu.getOrElse(value - 1) {
+            throw IllegalArgumentException("Invalid number")
+        }
+        return selectionMenu
+    }
 
-       selected_receipt = when (value) {
+    // 하위 클래스에서 제공해야 하는 메뉴 리스트
+    abstract fun getMenuList(): List<Pair<String, Int>>
+}
+
+class ReceiptOrder : ReceiptAction {
+    override fun orderReceipt(value: Int): String {
+        return when (value) {
             1 -> "to-go"
             2 -> "for here"
-            else -> {
-                throw IllegalArgumentException("invalid number")
-            }
-        }
-        println("order_receipt : $selected_receipt")
-        return selected_receipt
-    }
-
-    open fun orderMenu(value: Int) : Pair<String, Int> {
-        val menu = arrayListOf("coffee" to 2000, "ade" to 2500, "tea" to 2500)
-        println("Select Menu.$menu")
-
-        selected_menus = when(value) {
-            1 -> menu[1]
-            2 -> menu[2]
-            3 -> menu[3]
-            else -> {
-                throw IllegalArgumentException("invalid number")
-            }
-        }
-        println("order menu : ${menu[value-1]}")
-        return selected_menus
-    }
-
-    open fun orderQuantity(value: Int) {
-        println("Select order quantity. You can do up to 10.")
-        if (value in 1..10) {
-            println("order quantity : $value")
-        } else {
-            throw IllegalArgumentException("invalid number")
+            else -> throw IllegalArgumentException("Invalid number")
         }
     }
 }
 
-class OrderReceipt() : Order() {
-    override fun orderReceipt(value: Int) : String {
-        return super.orderReceipt(value)
-    }
-
-    fun printSelectedReceipt() {
-        if (selected_receipt != null) {
-            println("${selected_receipt}")
-        } else {
-            println("System Error")
-        }
-    }
-}
-
-class OrderMenu() : Order() {
-    override fun orderMenu(value: Int) : Pair<String, Int> {
-        return super.orderMenu(value)
-    }
-
-    fun printSelectedMenu() {
-        if (selected_menus != null) {
-            println("$selected_menus")
-        } else {
-            println("System Error")
-        }
-    }
-}
-
-class OrderQuantity() : Order() {
-    override fun orderQuantity(value: Int) {
-        return super.orderQuantity(value)
+class MenuOrder : Order() {
+    override fun getMenuList(): List<Pair<String, Int>> {
+        return listOf(
+            "coffee" to 2000,
+            "ade" to 2500,
+            "tea" to 2500
+        )
     }
 }
 
 fun main() {
-//    val orderReceipt = OrderReceipt()
-//    val orderMenu = OrderMenu()
-    println()
-    OrderReceipt().orderReceipt(1) // to-go 선택 및 출력
-    OrderReceipt().printSelectedReceipt()
+    val receiptOrder = ReceiptOrder()
+    println("Receipt: " + receiptOrder.orderReceipt(1))
 
-//    orderMenu.printSelectedMenu()
-//    println()
-//    OrderQuantity().orderQuantity(3)
-
+    val menuOrder = MenuOrder()
+    val selectedMenu = menuOrder.orderMenu(2)
+    println("Selected Menu : ${selectedMenu.first}, Price: ${selectedMenu.second}")
 
 }
